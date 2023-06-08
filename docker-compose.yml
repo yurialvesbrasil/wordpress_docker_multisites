@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+   db-multsite:
+     container_name: wp_multsite_db
+     image: mysql:5.7
+     volumes:
+       - ./db/volume:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: multsiteDB
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress-multsite:
+     depends_on:
+       - db-multsite  
+     image: wordpress:latest
+     ports:
+       - "8000:80"
+     restart: always
+     volumes: 
+            - ./src:/var/www/html
+     environment:
+       WORDPRESS_DB_HOST: db-multsite:3306
+       WORDPRESS_DB_NAME: multsiteDB
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+     container_name: wp_multsite_wordpress       
